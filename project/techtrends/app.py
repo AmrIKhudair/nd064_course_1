@@ -1,8 +1,9 @@
 import sqlite3
 
 from flask import Flask, jsonify, json, render_template, request, url_for, redirect, flash
-from werkzeug.exceptions import abort
 import logging
+import sys
+from werkzeug.exceptions import abort
 
 db_connection_count = 0
 
@@ -50,10 +51,10 @@ def index():
 def post(post_id):
     post = get_post(post_id)
     if post is None:
-        app.logger.error(f'Article #{post_id} not found!')
+        app.logger.error('Article #' + post_id + ' not found!')
         return render_template('404.html'), 404
     else:
-        app.logger.info(f"Article \"{post['title']}\" retrieved!")
+        app.logger.info('Article "' + post['title'] + '" retrieved!')
         return render_template('post.html', post=post)
 
 # Define the About Us page
@@ -80,7 +81,7 @@ def create():
             connection.execute('INSERT INTO posts (title, content) VALUES (?, ?)', (title, content))
             connection.commit()
             connection.close()
-            app.logger.info(f'Article \"{title}\" created!')
+            app.logger.info('Article "' + title + '" created!')
             return redirect(url_for('index'))
 
     return render_template('create.html')
@@ -101,8 +102,12 @@ def metrics():
 
 
 # Set the logging filename and location
-logging.basicConfig(filename='app.log', level=logging.DEBUG)
+logging.basicConfig(handlers=[
+    logging.FileHandler('app.log'),
+    logging.StreamHandler(sys.stdout),
+    logging.StreamHandler()
+], level=logging.DEBUG)
 
-# start the application on port 3111
+# start the application on port 7111
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port='3111')
+    app.run(host='0.0.0.0', port='7111')
