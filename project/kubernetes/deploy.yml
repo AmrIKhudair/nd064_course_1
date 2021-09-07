@@ -8,12 +8,10 @@ spec:
   selector:
     matchLabels:
       app: techtrends
-      namespace: sandbox
   template:
     metadata:
       labels:
         app: techtrends
-        namespace: sandbox
     spec:
       containers:
       - image: amrikhudair/techtrends:latest
