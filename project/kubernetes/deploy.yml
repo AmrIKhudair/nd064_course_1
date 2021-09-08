@@ -15,6 +15,7 @@ spec:
     spec:
       containers:
       - image: amrikhudair/techtrends:latest
+        imagePullPolicy: IfNotPresent
         name: techtrends
         resources:
           requests:
