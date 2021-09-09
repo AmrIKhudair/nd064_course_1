@@ -102,11 +102,15 @@ def metrics():
 
 
 # Set the logging filename and location
-logging.basicConfig(handlers=[
-    logging.FileHandler('app.log'),
-    logging.StreamHandler(sys.stdout),
-    logging.StreamHandler(sys.stderr)
-], level=logging.DEBUG)
+logging.basicConfig(
+    format_output='%(levelname)s: %(name)-2s - [%(asctime)s] - %(message)s',
+    handlers=[
+        logging.FileHandler('app.log'),
+        logging.StreamHandler(sys.stdout),
+        logging.StreamHandler(sys.stderr)
+    ],
+    level=logging.DEBUG
+)
 
 # start the application on port 7111
 if __name__ == "__main__":
