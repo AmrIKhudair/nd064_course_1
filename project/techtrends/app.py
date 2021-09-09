@@ -5,17 +5,14 @@ import logging
 import sys
 from werkzeug.exceptions import abort
 
-db_connection_count = 0
-
 # Function to get a database connection.
 # This function connects to database with the name `database.db`
 
 
 def get_db_connection():
-    global db_connection_count
     connection = sqlite3.connect('database.db')
     connection.row_factory = sqlite3.Row
-    db_connection_count += 1
+    app.config['DB_CONNECTION_COUNT'] += 1
     return connection
 
 # Function to get a post using its ID
@@ -32,6 +29,7 @@ def get_post(post_id):
 # Define the Flask application
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your secret key'
+app.config['DB_CONNECTION_COUNT'] = app.config.get('DB_CONNECTION_COUNT', 0)
 
 # Define the main route of the web application
 
@@ -98,12 +96,12 @@ def metrics():
     with get_db_connection() as connection:
         post_count = connection.execute(
             'SELECT COUNT(*) AS POST_COUNT FROM POSTS;').fetchone()['POST_COUNT']
-    return jsonify({'db_connection_count': db_connection_count, 'post_count': post_count})
+    return jsonify({'db_connection_count': app.config['DB_CONNECTION_COUNT'], 'post_count': post_count})
 
 
 # Set the logging filename and location
 logging.basicConfig(
-    format_output='%(levelname)s: %(name)-2s - [%(asctime)s] - %(message)s',
+    format='%(levelname)s: %(name)-2s - [%(asctime)s] - %(message)s',
     handlers=[
         logging.FileHandler('app.log'),
         logging.StreamHandler(sys.stdout),
