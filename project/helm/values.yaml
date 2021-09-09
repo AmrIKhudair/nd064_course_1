@@ -26,6 +26,8 @@ containerPort: 3111
 
 livelinessPrope:
   path: /healthz
+  port: 3111
 
 readinessPrope:
   path: /healthz
+  port: 3111
